@@ -42,7 +42,6 @@ export default {
     rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
     rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
     rgba(44, 187, 99, 0.25) 0 16px 32px;
-  transform: scale(1.25) rotate(-2deg) shake 0.82s
-    cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: scale(1.25) rotate(-1deg);
 }
 </style>
