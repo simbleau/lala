@@ -15,7 +15,7 @@ export default {
 <style scoped>
 .button-33 {
   background-color: #c2fbd7;
-  width: 300px;
+  width: 250px;
   height: 75px;
   border-radius: 100px;
   box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
@@ -31,7 +31,7 @@ export default {
   text-decoration: none;
   transition: all 250ms;
   border: 0;
-  font-size: 24px;
+  font-size: 20px;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
