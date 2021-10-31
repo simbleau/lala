@@ -7,7 +7,11 @@
   </div>
   <div id="status_container">
     <ServerStatusLabel id="server_label" v-bind:state="server_state" /> |
-    <ClientStatusLabel id="client_label" v-bind:state="client_state" />
+    <ClientStatusLabel
+      id="client_label"
+      v-bind:state="client_state"
+      v-bind:count="client_count"
+    />
   </div>
 </template>
 
@@ -22,7 +26,8 @@ export default {
   data() {
     return {
       server_state: SERVER_STATE.QUERYING,
-      client_state: SERVER_STATE.QUERYING,
+      client_state: CLIENT_STATE.QUERYING,
+      client_count: "Fetching...",
     };
   },
   components: {
@@ -40,13 +45,15 @@ export default {
     initialize: async function () {
       this.server_state = SERVER_STATE.QUERYING;
       this.client_state = CLIENT_STATE.QUERYING;
+      this.client_count = "Fetching...";
       await this.sleep(2000);
 
       this.$store.commit("increment");
       console.log(this.$store.state.count); // -> 1
 
       this.server_state = SERVER_STATE.REACHABLE;
-      this.client_state = SERVER_STATE.REACHABLE;
+      this.client_state = CLIENT_STATE.UNREACHABLE;
+      this.client_count = "0";
     },
   },
 };

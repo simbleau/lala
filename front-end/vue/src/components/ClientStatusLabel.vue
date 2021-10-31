@@ -1,7 +1,7 @@
 <template>
   <div class="label_container">
     <figure v-bind:class="state.class" class="dot" />
-    <span v-bind:class="state.class">Clients: {{ state.label }}</span>
+    <span v-bind:class="state.class">Responders: {{ count }}</span>
   </div>
 </template>
 
@@ -13,10 +13,10 @@ export const CLIENT_STATE = {
 };
 export const QUERY_ADDRESS = "https://imbleau.com/lala/get.php?who=Lala";
 export default {
-  name: "ServerStatusLabel",
+  name: "ClientStatusLabel",
   props: {
     state: CLIENT_STATE,
-    client_count: String,
+    count: String,
   },
 };
 </script>
@@ -57,16 +57,16 @@ span.querying {
   animation: query-anim 2s ease-out infinite;
 }
 span.reachable {
-  color: green;
+  color: #42b983;
 }
 .dot.reachable {
-  background-color: green;
+  background-color: #42b983;
 }
 span.unreachable {
-  color: red;
+  color: #b94242;
 }
 .dot.unreachable {
-  background-color: red;
+  background-color: #b94242;
 }
 
 @keyframes query-anim {
