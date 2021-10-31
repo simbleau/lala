@@ -59,7 +59,7 @@ span {
   transform: rotate(40deg);
 }
 span.querying {
-  color: gray;
+  color: darkgray;
   font-style: italic;
 }
 .dot.querying {
@@ -85,20 +85,20 @@ span.unreachable {
     transform: scale(1);
   }
   20% {
-    -webkit-transform: scaleY(0.95) scaleX(1.05);
-    transform: scaleY(0.95) scaleX(1.05);
+    -webkit-transform: scaleY(0.85) scaleX(1.15);
+    transform: scaleY(0.85) scaleX(1.15);
   }
   48% {
-    -webkit-transform: scaleY(1.1) scaleX(0.9);
-    transform: scaleY(1.1) scaleX(0.9);
+    -webkit-transform: scaleY(1.2) scaleX(0.8);
+    transform: scaleY(1.2) scaleX(0.8);
   }
   68% {
-    -webkit-transform: scaleY(0.98) scaleX(1.02);
-    transform: scaleY(0.98) scaleX(1.02);
+    -webkit-transform: scaleY(0.88) scaleX(1.12);
+    transform: scaleY(0.88) scaleX(1.12);
   }
   80% {
-    -webkit-transform: scaleY(1.02) scaleX(0.98);
-    transform: scaleY(1.02) scaleX(0.98);
+    -webkit-transform: scaleY(1.12) scaleX(0.88);
+    transform: scaleY(1.12) scaleX(0.88);
   }
   97%,
   100% {
