@@ -56,16 +56,16 @@ span.querying {
   animation: query-anim 2s ease-out infinite;
 }
 span.reachable {
-  color: green;
+  color: #42b983;
 }
 .dot.reachable {
-  background-color: green;
+  background-color: #42b983;
 }
 span.unreachable {
-  color: red;
+  color: #b94242;
 }
 .dot.unreachable {
-  background-color: red;
+  background-color: #b94242;
 }
 
 @keyframes query-anim {
