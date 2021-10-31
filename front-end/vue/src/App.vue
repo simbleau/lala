@@ -5,8 +5,25 @@
     <router-link to="/history">History</router-link> |
     <router-link to="/api">API</router-link>
   </div>
+  <ServerStatusLabel id="server_label" v-bind:state="server_state" />
   <router-view />
 </template>
+
+<script>
+import ServerStatusLabel from "@/components/ServerStatusLabel.vue";
+import { SERVER_STATE } from "@/components/ServerStatusLabel.vue";
+
+export default {
+  data() {
+    return {
+      server_state: SERVER_STATE.QUERYING,
+    };
+  },
+  components: {
+    ServerStatusLabel,
+  },
+};
+</script>
 
 <style>
 body {

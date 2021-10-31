@@ -16,7 +16,7 @@ import { BUTTON_STATE } from "@/components/AlarmButton.vue";
 
 export default {
   name: "Home",
-  data: function () {
+  data() {
     return {
       button_state: BUTTON_STATE.READY,
     };
