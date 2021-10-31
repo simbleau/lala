@@ -41,6 +41,10 @@ export default {
       this.server_state = SERVER_STATE.QUERYING;
       this.client_state = CLIENT_STATE.QUERYING;
       await this.sleep(2000);
+
+      this.$store.commit("increment");
+      console.log(this.$store.state.count); // -> 1
+
       this.server_state = SERVER_STATE.REACHABLE;
       this.client_state = SERVER_STATE.REACHABLE;
     },
