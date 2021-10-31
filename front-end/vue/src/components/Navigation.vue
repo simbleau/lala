@@ -22,6 +22,20 @@ export default {
   components: {
     ServerStatusLabel,
   },
+  mounted() {
+    this.$nextTick(this.initialize);
+  },
+  methods: {
+    sleep: function (ms) {
+      // Expensive function
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    initialize: async function () {
+      this.server_state = SERVER_STATE.QUERYING;
+      await this.sleep(2000);
+      this.server_state = SERVER_STATE.REACHABLE;
+    },
+  },
 };
 </script>
 
