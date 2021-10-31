@@ -5,22 +5,29 @@
     <router-link to="/history">History</router-link> |
     <router-link to="/api">API</router-link>
   </div>
-  <ServerStatusLabel id="server_label" v-bind:state="server_state" />
+  <div id="status_container">
+    <ServerStatusLabel id="server_label" v-bind:state="server_state" /> |
+    <ClientStatusLabel id="client_label" v-bind:state="client_state" />
+  </div>
 </template>
 
 <script>
 import ServerStatusLabel from "@/components/ServerStatusLabel.vue";
 import { SERVER_STATE } from "@/components/ServerStatusLabel.vue";
+import ClientStatusLabel from "@/components/ClientStatusLabel.vue";
+import { CLIENT_STATE } from "@/components/ClientStatusLabel.vue";
 
 export default {
   name: "Navigation",
   data() {
     return {
       server_state: SERVER_STATE.QUERYING,
+      client_state: SERVER_STATE.QUERYING,
     };
   },
   components: {
     ServerStatusLabel,
+    ClientStatusLabel,
   },
   mounted() {
     this.$nextTick(this.initialize);
@@ -32,8 +39,10 @@ export default {
     },
     initialize: async function () {
       this.server_state = SERVER_STATE.QUERYING;
+      this.client_state = CLIENT_STATE.QUERYING;
       await this.sleep(2000);
       this.server_state = SERVER_STATE.REACHABLE;
+      this.client_state = SERVER_STATE.REACHABLE;
     },
   },
 };
@@ -49,5 +58,14 @@ export default {
 }
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+#server_label,
+#client_label,
+#status_container {
+  display: inline-flex;
+  column-gap: 10px;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
