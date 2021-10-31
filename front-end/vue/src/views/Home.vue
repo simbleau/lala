@@ -1,7 +1,5 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <br />
     <AlarmButton
       id="alarm_button"
       v-bind:state="button_state"
@@ -42,3 +40,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.home {
+  margin: 50px;
+}
+</style>
