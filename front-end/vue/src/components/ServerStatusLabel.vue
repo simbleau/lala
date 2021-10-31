@@ -1,8 +1,8 @@
 <template>
-  <span class="server_label_container">
+  <div id="label_container">
     <figure v-bind:class="state.class" class="dot" />
-    <span v-bind:class="state.class">{{ state.label }}</span>
-  </span>
+    <span v-bind:class="state.class">Server: {{ state.label }}</span>
+  </div>
 </template>
 
 <script>
@@ -17,28 +17,17 @@ export default {
   props: {
     state: SERVER_STATE,
   },
-  mounted() {
-    this.$nextTick(function () {
-      console.log("Rendered");
-    });
-  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.server_label_container {
-  display: inline-flex;
-  column-gap: 10px;
-  justify-content: space-between;
-  align-items: center;
-}
 span {
   font-weight: bold;
 }
 .dot {
-  height: 30px;
-  width: 30px;
+  height: 1em;
+  width: 1em;
   border-width: 2px;
   border-color: rgba(255, 255, 255, 0.4);
   border-style: solid;
