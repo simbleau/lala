@@ -28,6 +28,7 @@ export default {
   name: "History",
   components: {},
   mounted() {
+    // TODO load data in
     let mock_entry = new HistoryEntry(0, "server", "localhost", new Date());
     this.$store.commit("add_history", mock_entry);
   },
