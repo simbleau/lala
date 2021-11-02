@@ -1,11 +1,12 @@
 import { createStore } from "vuex"
+import { HistoryEntry } from "@/util/history"
 
 const store = createStore({
     state: {
         HISTORY_CAPACITY: 200,
-        servers: [],
-        responders: [],
-        history: [],
+        servers: ['192.168.1.9'],
+        responders: ['192.168.1.4'],
+        history: [new HistoryEntry('server', 'localhost', new Date())],
     },
     getters: {
         get_servers: state => {
@@ -42,6 +43,9 @@ const store = createStore({
             if (index > -1) {
                 state.responders.splice(index, 1);
             }
+        },
+        clear_history(state) {
+            state.history.length = 0;
         },
         add_history(state, log) {
             state.history.push(log)
