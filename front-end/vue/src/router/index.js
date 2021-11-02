@@ -10,17 +10,17 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('../views/About.vue')
+    component: () => import('@/views/About.vue')
   },
   {
     path: '/history',
     name: 'History',
-    component: () => import('../views/History.vue')
+    component: () => import('@/views/History.vue')
   },
   {
     path: '/api',
     name: 'API',
-    component: () => import('../views/API.vue')
+    component: () => import('@/views/API.vue')
   },
 ]
 
