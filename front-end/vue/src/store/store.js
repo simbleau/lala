@@ -1,12 +1,11 @@
 import { createStore } from "vuex"
-import { HistoryEntry } from "@/util/history"
 
 const store = createStore({
     state: {
         HISTORY_CAPACITY: 200,
         servers: ['192.168.1.9'],
         responders: ['192.168.1.4'],
-        history: [new HistoryEntry('server', 'localhost', new Date())],
+        history: [],
     },
     getters: {
         get_servers: state => {
@@ -48,6 +47,7 @@ const store = createStore({
             state.history.length = 0;
         },
         add_history(state, log) {
+            console.log("called");
             state.history.push(log)
             if (state.history.length > state.HISTORY_CAPACITY) {
                 state.history.shift();
