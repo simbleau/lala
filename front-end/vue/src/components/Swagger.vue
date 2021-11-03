@@ -23,7 +23,7 @@ export default {
   padding: 50px;
   width: 100%;
   max-width: 600px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
 }
 </style>
