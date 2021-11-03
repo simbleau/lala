@@ -11,8 +11,8 @@
 </template>
 
 <script>
-export const QUERY_ADDRESS = "http://imbleau.com/lala/get.php?who=Lala";
-export const BUTTON_STATE = {
+const QUERY_ADDRESS = "https://imbleau.com/lala/get.php?who=Lala";
+const BUTTON_STATE = {
   READY: { label: "Alarm!", class: "ready", disabled: false },
   LOADING: { label: "Loading...", class: "loading", disabled: true },
   FAILED: { label: "Failed. Try again?", class: "failed", disabled: true },
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       state: BUTTON_STATE.READY,
-      info: String,
+      info: "",
       timeout: 5000, // in ms
       state_change: 3000, // in ms
     };
@@ -36,7 +36,7 @@ export default {
       // Set to loading state
       this.state = BUTTON_STATE.LOADING;
       this.axios
-        .get("https://api.coindesk.com/v1/bpi/currentprice.json", {
+        .get(QUERY_ADDRESS, {
           timeout: this.timeout,
         })
         .then((response) => {
