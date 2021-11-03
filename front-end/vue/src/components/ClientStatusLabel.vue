@@ -11,7 +11,6 @@ export const CLIENT_STATE = {
   REACHABLE: { class: "reachable" },
   UNREACHABLE: { class: "unreachable" },
 };
-export const QUERY_ADDRESS = "https://imbleau.com/lala/get.php?who=Lala";
 export default {
   name: "ClientStatusLabel",
   props: {

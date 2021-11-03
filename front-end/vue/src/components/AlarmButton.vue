@@ -2,13 +2,16 @@
   <button
     v-bind:class="state.class"
     v-bind:disabled="state.disabled"
+    v-on:click="call"
     class="button-33"
   >
     {{ state.label }}
   </button>
+  <h2>{{ this.info }}</h2>
 </template>
 
 <script>
+export const QUERY_ADDRESS = "http://imbleau.com/lala/get.php?who=Lala";
 export const BUTTON_STATE = {
   READY: { label: "Alarm!", class: "ready", disabled: false },
   LOADING: { label: "Loading...", class: "loading", disabled: true },
@@ -17,8 +20,40 @@ export const BUTTON_STATE = {
 };
 export default {
   name: "AlarmButton",
-  props: {
-    state: BUTTON_STATE,
+  data() {
+    return {
+      state: BUTTON_STATE.READY,
+      info: String,
+      timeout: 5000, // in ms
+      state_change: 3000, // in ms
+    };
+  },
+  methods: {
+    wait: function (ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    call: async function () {
+      // Set to loading state
+      this.state = BUTTON_STATE.LOADING;
+      this.axios
+        .get("https://api.coindesk.com/v1/bpi/currentprice.json", {
+          timeout: this.timeout,
+        })
+        .then((response) => {
+          this.info = response;
+          this.state = BUTTON_STATE.SUCCESS;
+        })
+        .catch((err) => {
+          console.log(err.code);
+          console.log(err.message);
+          console.log(err.stack);
+          this.state = BUTTON_STATE.FAILED;
+        })
+        .then(await this.wait(this.state_change))
+        .then(() => {
+          this.state = BUTTON_STATE.READY;
+        });
+    },
   },
 };
 </script>

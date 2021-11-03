@@ -11,7 +11,6 @@ export const SERVER_STATE = {
   REACHABLE: { label: "Online", class: "reachable" },
   UNREACHABLE: { label: "Offline", class: "unreachable" },
 };
-export const QUERY_ADDRESS = "https://imbleau.com/lala/get.php?who=Lala";
 export default {
   name: "ServerStatusLabel",
   props: {
