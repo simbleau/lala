@@ -1,9 +1,9 @@
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
     <router-link to="/history">History</router-link> |
-    <router-link to="/api">API</router-link>
+    <router-link to="/api">API</router-link> |
+    <router-link to="/about">About</router-link>
   </div>
   <div id="status_container">
     <ServerStatusLabel id="server_label" v-bind:state="server_state" /> |
@@ -78,6 +78,6 @@ export default {
 }
 
 #spacer {
-  margin-bottom: 40px;
+  margin-bottom: 1cm;
 }
 </style>
