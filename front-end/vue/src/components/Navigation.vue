@@ -13,6 +13,7 @@
       v-bind:count="client_count"
     />
   </div>
+  <div id="spacer" />
 </template>
 
 <script>
@@ -74,5 +75,9 @@ export default {
   column-gap: 10px;
   justify-content: space-between;
   align-items: center;
+}
+
+#spacer {
+  margin-bottom: 40px;
 }
 </style>
