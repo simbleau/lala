@@ -40,7 +40,7 @@ export default {
           timeout: this.timeout,
         })
         .then((response) => {
-          this.info = response;
+          this.info = response.data;
           this.state = BUTTON_STATE.SUCCESS;
         })
         .catch((err) => {
@@ -50,9 +50,7 @@ export default {
           this.state = BUTTON_STATE.FAILED;
         })
         .then(await this.wait(this.state_change))
-        .then(() => {
-          this.state = BUTTON_STATE.READY;
-        });
+        .then(() => (this.state = BUTTON_STATE.READY));
     },
   },
 };
