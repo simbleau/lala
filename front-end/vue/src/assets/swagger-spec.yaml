@@ -1,0 +1,94 @@
+swagger: "2.0"
+info:
+  description: "This is the API spec for interfacing externally with this alarm system. Check-ins for servers and responders must occur within every 15 minutes."
+  version: "1.0.0"
+  title: "Lala"
+  contact:
+    email: "spencer@imbleau.com"
+  license:
+    name: "MIT License"
+    url: "https://github.com/simbleau/lala/blob/main/LICENSE"
+host: "imbleau.com"
+basePath: "/lala"
+tags:
+- name: "systems"
+  description: "Query everything about alarm hosts"
+- name: "signals"
+  description: "Sending and receiving signals to hosts"
+- name: "history"
+  description: "Retrival and querying of alarm history"
+schemes:
+- "https"
+- "http"
+paths:
+  /servers:
+    get:
+      tags:
+      - "systems"
+      summary: "Return a list of hosting servers"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Host"
+        "401":
+          description: "Unauthorized"
+    put:
+      tags:
+      - "systems"
+      summary: "Register your address as a hosting server"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful response"
+          schema:
+              $ref: "#/definitions/Host"
+        "401":
+          description: "Unauthorized"
+      security:
+      - api_key: []
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Host:
+    type: "object"
+    properties:
+      addr:
+        type: "string"
+        format: "ipv4"
+        description: "A string value representing an IP address, in either IPv4 (RFC 791) or IPv6 (RFC 8200) format."
+      last-checkin:
+        type: "string"
+        format: "date-time"
+        description: "A string value representing a date, which is an IETF-compliant RFC 2822 timestamp."
+  HistoryEntry:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+        description: "The unique id of this history entry."
+      type:
+        type: "string"
+        enum:
+        - "server"
+        - "client"
+        - "ack"
+        - "code-1"
+        description: "One of several values representing the type of history entry this object represents."
+      host:
+        type: "string"
+        format: "ip"
+        description: "A string value representing an IP address, in either IPv4 (RFC 791) or IPv6 (RFC 8200) format."
+      date:
+        type: "string"
+        format: "date-time"
+        description: "A string value representing a date, which is an IETF-compliant RFC 2822 timestamp."
