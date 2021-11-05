@@ -7,7 +7,7 @@
 
 <script>
 export const SERVER_STATE = {
-  QUERYING: { label: "Querying...", class: "querying" },
+  QUERYING: { label: "Fetching...", class: "querying" },
   REACHABLE: { label: "Online", class: "reachable" },
   UNREACHABLE: { label: "Offline", class: "unreachable" },
 };
@@ -52,7 +52,7 @@ span.querying {
 }
 .dot.querying {
   background-color: grey;
-  animation: query-anim 2s ease-out infinite;
+  animation: query-anim 0.5s ease-out infinite;
 }
 span.reachable {
   color: #42b983;
@@ -72,23 +72,14 @@ span.unreachable {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-  20% {
+  33% {
     -webkit-transform: scaleY(0.85) scaleX(1.15);
     transform: scaleY(0.85) scaleX(1.15);
   }
-  48% {
-    -webkit-transform: scaleY(1.2) scaleX(0.8);
-    transform: scaleY(1.2) scaleX(0.8);
-  }
   68% {
-    -webkit-transform: scaleY(0.88) scaleX(1.12);
-    transform: scaleY(0.88) scaleX(1.12);
+    -webkit-transform: scaleY(1.15) scaleX(0.85);
+    transform: scaleY(1.15) scaleX(0.85);
   }
-  80% {
-    -webkit-transform: scaleY(1.12) scaleX(0.88);
-    transform: scaleY(1.12) scaleX(0.88);
-  }
-  97%,
   100% {
     -webkit-transform: scale(1);
     transform: scale(1);

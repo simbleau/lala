@@ -47,7 +47,7 @@ export default {
       this.server_state = SERVER_STATE.QUERYING;
       this.client_state = CLIENT_STATE.QUERYING;
       this.client_count = "Fetching...";
-      await this.sleep(2000);
+      await this.sleep(5000);
       this.server_state = SERVER_STATE.REACHABLE;
       this.client_state = CLIENT_STATE.UNREACHABLE;
       this.client_count = "0";
