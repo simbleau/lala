@@ -14,7 +14,7 @@ export default class HistoryEntry {
             SERVER_CHECK_IN: "server",
             CLIENT_CHECK_IN: "client",
             ACK: "ack",
-            ALARM: "1",
+            ALARM: "code-1",
         };
     }
 
