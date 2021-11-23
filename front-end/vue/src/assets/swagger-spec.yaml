@@ -12,11 +12,11 @@ host: "imbleau.com"
 basePath: "/lala"
 tags:
 - name: "systems"
-  description: "Query everything about alarm hosts"
+  description: "Everything about alarm servers"
 - name: "signals"
-  description: "Sending and receiving signals to hosts"
+  description: "Everything about querying alarm servers"
 - name: "history"
-  description: "Retrival and querying of alarm history"
+  description: "Everything about alarm history"
 schemes:
 - "https"
 - "http"
@@ -26,6 +26,12 @@ paths:
       tags:
       - "systems"
       summary: "Return a list of hosting servers"
+      parameters:
+        - in: query
+          name: limit
+          type: integer
+          required: false
+          description: The limit of servers to respond with.
       produces:
       - "application/json"
       responses:
@@ -44,7 +50,7 @@ paths:
       produces:
       - "application/json"
       responses:
-        "200":
+        "201":
           description: "Successful response"
           schema:
               $ref: "#/definitions/Host"
@@ -52,12 +58,93 @@ paths:
           description: "Unauthorized"
       security:
       - api_key: []
+  /status:
+    post:
+      tags:
+      - "signals"
+      summary: "Return the status of an alarm host"
+      parameters:
+        - in: query
+          name: server
+          type: "string"
+          format: "ip"
+          required: true
+          description: The server to query
+      responses:
+        "200":
+          description: "Alarm status was successfully retrieved"
+          schema:
+              $ref: "#/definitions/AlarmStatus"
+        "401":
+          description: "Unauthorized"
+  /signal:
+    post:
+      tags:
+      - "signals"
+      summary: "Signal an alarm host"
+      parameters:
+        - in: query
+          name: server
+          type: "string"
+          format: "ip"
+          required: true
+          description: The server to alert
+      responses:
+        "204":
+          description: "Alarm was successfully triggered"
+        "304":
+          description: "Alarm was already on"
+        "401":
+          description: "Unauthorized"
+  /silence:
+    post:
+      tags:
+      - "signals"
+      summary: "Signal an alarm host"
+      parameters:
+        - in: query
+          name: server
+          type: "string"
+          format: "ip"
+          required: true
+          description: The server to silence
+      responses:
+        "204":
+          description: "Alarm was successfully silenced"
+        "304":
+          description: "Alarm was already off"
+        "401":
+          description: "Unauthorized"
+  /history:
+    get:
+      tags:
+      - "history"
+      summary: "Return alarm history for a host"
+      parameters:
+        - in: query
+          name: server
+          type: "string"
+          format: "ip"
+          required: true
+          description: The server to query
+      responses:
+        "200":
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/HistoryEntry"
+        "401":
+          description: "Unauthorized"
 securityDefinitions:
   api_key:
     type: "apiKey"
     name: "api_key"
     in: "header"
 definitions:
+  AlarmStatus:
+    type: "boolean"
+    description: "Whether the alarm is acknowledged; true if acknowledged, false otherwise."
   Host:
     type: "object"
     properties:
