@@ -3,7 +3,7 @@ use ringbuffer::{ConstGenericRingBuffer, RingBufferWrite};
 use rocket::serde::Serialize;
 use rocket_client_addr::ClientAddr;
 
-const HISTORY_SIZE: usize = 2_usize.pow(1);
+const HISTORY_SIZE: usize = 2_usize.pow(10);
 
 #[derive(Serialize)]
 pub struct HistoryEntry {
