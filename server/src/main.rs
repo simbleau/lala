@@ -7,6 +7,16 @@ use std::sync::Mutex;
 mod state;
 use state::Config;
 
+#[catch(404)]
+fn not_found() -> &'static str {
+    "Resource not found."
+}
+
+#[catch(500)]
+fn internal_error() -> &'static str {
+    "Internal error occurred."
+}
+
 #[get("/status")]
 fn status(state: &State<Mutex<Config>>) -> String {
     let config = state.lock().unwrap();
@@ -43,4 +53,5 @@ fn rocket() -> _ {
     rocket::build()
         .manage(Mutex::new(Config::default()))
         .mount("/", routes![status, signal, silence, history])
+        .register("/", catchers![not_found, internal_error])
 }
