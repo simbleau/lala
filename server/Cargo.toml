@@ -18,7 +18,7 @@ path = "src/bin/alarm/main.rs"
 
 [[bin]]
 name = "authoritative-server"
-path = "src/bin/server/main.rs"
+path = "src/bin/authority/main.rs"
 
 [dependencies]
 priority-queue = "1.2.0"
