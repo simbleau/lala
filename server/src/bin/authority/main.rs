@@ -1,8 +1,9 @@
 #[macro_use]
 extern crate rocket;
-use rocket::{http::Status, State};
+use rocket::{http::Status, response::Redirect, Config, State};
 use rocket_client_addr::ClientAddr;
-use std::sync::Mutex;
+use server_util::AUTHORITY_PORT;
+use std::{net::Ipv4Addr, sync::Mutex};
 mod server_state;
 use server_state::ServerState;
 
@@ -33,10 +34,45 @@ fn put_server(
     Status::Created
 }
 
+#[post("/status?<server>")]
+fn status_redirect(server: &str) -> Redirect {
+    Redirect::to(format!("{}/status", server))
+}
+
+#[post("/signal?<server>")]
+fn signal_redirect(server: &str) -> Redirect {
+    Redirect::to(format!("{}/signal", server))
+}
+
+#[post("/silence?<server>")]
+fn silence_redirect(server: &str) -> Redirect {
+    Redirect::to(format!("{}/silence", server))
+}
+
+#[get("/history?<server>")]
+fn history_redirect(server: &str) -> Redirect {
+    Redirect::to(format!("{}/history", server))
+}
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
+    let config = Config {
+        port: AUTHORITY_PORT,
+        address: Ipv4Addr::new(0, 0, 0, 0).into(),
+        ..Config::default()
+    };
+
+    rocket::custom(&config)
         .manage(Mutex::new(ServerState::default()))
         .mount("/", routes![get_servers, put_server])
+        .mount(
+            "/",
+            routes![
+                status_redirect,
+                signal_redirect,
+                silence_redirect,
+                history_redirect
+            ],
+        )
         .register("/", catchers![not_found, internal_error])
 }
