@@ -2,7 +2,7 @@
 extern crate rocket;
 use rocket::{http::Status, response::Redirect, Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::{ALARM_PORT, AUTHORITY_PORT};
+use server_util::{ALARM_PORT, AUTHORITY_PORT, CORS};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod server_state;
 use server_state::ServerState;
@@ -64,6 +64,7 @@ fn rocket() -> _ {
     };
 
     rocket::custom(&config)
+        .attach(CORS)
         .manage(Mutex::new(ServerState::default()))
         .mount("/", routes![get_servers, put_server])
         .mount(

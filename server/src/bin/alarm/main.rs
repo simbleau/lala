@@ -3,7 +3,7 @@ extern crate rocket;
 use ringbuffer::RingBufferExt;
 use rocket::{Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::ALARM_PORT;
+use server_util::{ALARM_PORT, CORS};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod alarm_state;
 use alarm_state::AlarmState;
@@ -63,6 +63,7 @@ fn rocket() -> _ {
     };
 
     rocket::custom(&config)
+        .attach(CORS)
         .manage(Mutex::new(AlarmState::default()))
         .mount("/", routes![status, signal, silence, history])
         .register("/", catchers![not_found, internal_error])
