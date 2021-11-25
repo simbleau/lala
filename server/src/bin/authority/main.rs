@@ -2,7 +2,7 @@
 extern crate rocket;
 use rocket::{http::Status, response::Redirect, Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::AUTHORITY_PORT;
+use server_util::{ALARM_PORT, AUTHORITY_PORT};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod server_state;
 use server_state::ServerState;
@@ -34,24 +34,25 @@ fn put_server(
     Status::Created
 }
 
-#[post("/status?<server>")]
+#[get("/status?<server>")]
 fn status_redirect(server: &str) -> Redirect {
-    Redirect::to(format!("{}/status", server))
+    println!("http://{}:{}/history", server, ALARM_PORT);
+    Redirect::permanent(format!("http://{}:{}/status", server, ALARM_PORT))
 }
 
 #[post("/signal?<server>")]
 fn signal_redirect(server: &str) -> Redirect {
-    Redirect::to(format!("{}/signal", server))
+    Redirect::permanent(format!("http://{}:{}/signal", server, ALARM_PORT))
 }
 
 #[post("/silence?<server>")]
 fn silence_redirect(server: &str) -> Redirect {
-    Redirect::to(format!("{}/silence", server))
+    Redirect::permanent(format!("http://{}:{}/silence", server, ALARM_PORT))
 }
 
 #[get("/history?<server>")]
 fn history_redirect(server: &str) -> Redirect {
-    Redirect::to(format!("{}/history", server))
+    Redirect::permanent(format!("http://{}:{}/history", server, ALARM_PORT))
 }
 
 #[launch]
