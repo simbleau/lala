@@ -2,45 +2,30 @@ import { createStore } from "vuex"
 
 const store = createStore({
     state: {
-        HISTORY_CAPACITY: 200,
-        servers: ['192.168.1.9'],
-        responders: ['192.168.1.4'],
+        server: "http://0.0.0.0:8081",
+        history_limit: 200,
+        alarms: [],
         history: [],
     },
     getters: {
-        get_servers: state => {
-            return state.servers;
+        get_server: state => {
+            return state.server;
         },
-        get_num_servers: state => {
-            return state.servers.length
-        },
-        get_responders: state => {
-            return state.responders;
-        },
-        get_num_responders: state => {
-            return state.responders.length
+        get_alarms: state => {
+            return state.alarms;
         },
         get_history: state => {
             return state.history;
         },
     },
     mutations: {
-        add_server(state, server) {
-            state.servers.push(server);
+        add_alarm(state, server) {
+            state.alarms.push(server);
         },
-        remove_server(state, server) {
-            const index = state.servers.indexOf(server);
+        remove_alarm(state, server) {
+            const index = state.alarms.indexOf(server);
             if (index > -1) {
-                state.servers.splice(index, 1);
-            }
-        },
-        add_responder(state, responder) {
-            state.responders.push(responder);
-        },
-        remove_responder(state, responder) {
-            const index = state.responders.indexOf(responder);
-            if (index > -1) {
-                state.responders.splice(index, 1);
+                state.alarms.splice(index, 1);
             }
         },
         clear_history(state) {

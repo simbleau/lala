@@ -2,10 +2,16 @@
   <div id="label_container">
     <figure v-bind:class="state.class" class="dot" />
     <span v-bind:class="state.class">Server: {{ state.label }}</span>
+    <template v-if="state == SERVER_STATE.REACHABLE">
+      <span>|</span>
+      <AlarmCountLabel id="alarm_label" v-bind:count="alarm_count" />
+    </template>
   </div>
 </template>
 
 <script>
+import AlarmCountLabel from "@/components/AlarmCountLabel.vue";
+
 export const SERVER_STATE = {
   QUERYING: { label: "Fetching...", class: "querying" },
   REACHABLE: { label: "Online", class: "reachable" },
@@ -13,8 +19,43 @@ export const SERVER_STATE = {
 };
 export default {
   name: "ServerStatusLabel",
-  props: {
-    state: SERVER_STATE,
+  data() {
+    return {
+      SERVER_STATE,
+      state: SERVER_STATE.QUERYING,
+      alarm_count: Number,
+    };
+  },
+  components: {
+    AlarmCountLabel,
+  },
+  mounted() {
+    this.$nextTick(this.init);
+  },
+  methods: {
+    sleep: function (ms) {
+      // Expensive function
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    init: async function () {
+      console.log(this.$store.getters.get_server);
+      this.state = SERVER_STATE.QUERYING;
+      this.axios
+        .get("http://0.0.0.0:8081/servers", {
+          timeout: this.timeout,
+        })
+        .then((response) => {
+          console.log(response);
+          this.info = response.data;
+          this.state = SERVER_STATE.REACHABLE;
+        })
+        .catch((err) => {
+          console.log(err.code);
+          console.log(err.message);
+          console.log(err.stack);
+          this.state = SERVER_STATE.UNREACHABLE;
+        });
+    },
   },
 };
 </script>
