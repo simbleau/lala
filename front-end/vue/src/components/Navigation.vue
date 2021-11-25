@@ -6,12 +6,11 @@
     <router-link to="/about">About</router-link>
   </div>
   <div id="status_container">
-    <ServerStatusLabel id="server_label" v-bind:state="server_state" /> |
-    <ClientStatusLabel
-      id="client_label"
-      v-bind:state="client_state"
-      v-bind:count="client_count"
-    />
+    <ServerStatusLabel id="server_label" v-bind:state="server_state" />
+    <template v-if="server_state == SERVER_STATE.REACHABLE">
+      <span>|</span>
+      <AlarmCountLabel id="alarm_label" v-bind:count="alarm_count" />
+    </template>
   </div>
   <div id="spacer" />
 </template>
@@ -19,21 +18,20 @@
 <script>
 import ServerStatusLabel from "@/components/ServerStatusLabel.vue";
 import { SERVER_STATE } from "@/components/ServerStatusLabel.vue";
-import ClientStatusLabel from "@/components/ClientStatusLabel.vue";
-import { CLIENT_STATE } from "@/components/ClientStatusLabel.vue";
+import AlarmCountLabel from "@/components/AlarmCountLabel.vue";
 
 export default {
   name: "Navigation",
   data() {
     return {
+      SERVER_STATE,
       server_state: SERVER_STATE.QUERYING,
-      client_state: CLIENT_STATE.QUERYING,
-      client_count: "Fetching...",
+      alarm_count: 0,
     };
   },
   components: {
     ServerStatusLabel,
-    ClientStatusLabel,
+    AlarmCountLabel,
   },
   mounted() {
     this.$nextTick(this.initialize);
@@ -45,12 +43,9 @@ export default {
     },
     initialize: async function () {
       this.server_state = SERVER_STATE.QUERYING;
-      this.client_state = CLIENT_STATE.QUERYING;
-      this.client_count = "Fetching...";
       await this.sleep(5000);
       this.server_state = SERVER_STATE.REACHABLE;
-      this.client_state = CLIENT_STATE.UNREACHABLE;
-      this.client_count = "0";
+      this.alarm_count = 0;
     },
   },
 };

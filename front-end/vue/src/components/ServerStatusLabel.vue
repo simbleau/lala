@@ -9,7 +9,7 @@
 export const SERVER_STATE = {
   QUERYING: { label: "Fetching...", class: "querying" },
   REACHABLE: { label: "Online", class: "reachable" },
-  UNREACHABLE: { label: "Offline", class: "unreachable" },
+  UNREACHABLE: { label: "Unreachable", class: "unreachable" },
 };
 export default {
   name: "ServerStatusLabel",
