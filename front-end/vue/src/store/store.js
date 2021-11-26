@@ -1,43 +1,54 @@
 import { createStore } from "vuex"
+import axios from 'axios'
 
 const store = createStore({
     state: {
         server: "http://0.0.0.0:8081",
-        history_limit: 200,
+        reachable: false,
         alarms: [],
-        history: [],
     },
     getters: {
-        get_server: state => {
+        server: state => {
             return state.server;
         },
-        get_alarms: state => {
-            return state.alarms;
+        reachable: state => {
+            return state.reachable;
         },
-        get_history: state => {
-            return state.history;
+        alarms: state => {
+            return state.alarms;
         },
     },
     mutations: {
-        add_alarm(state, server) {
-            state.alarms.push(server);
+        set_reachable(state, reachable) {
+            state.reachable = reachable;
         },
-        remove_alarm(state, server) {
-            const index = state.alarms.indexOf(server);
-            if (index > -1) {
-                state.alarms.splice(index, 1);
-            }
+        clear_alarms(state) {
+            state.alarms = [];
         },
-        clear_history(state) {
-            state.history.length = 0;
+        update_alarms(state, alarms) {
+            state.alarms = alarms;
         },
-        add_history(state, log) {
-            console.log("called");
-            state.history.push(log)
-            if (state.history.length > state.HISTORY_CAPACITY) {
-                state.history.shift();
-            }
-        }
+    },
+    actions: {
+        fetch_alarms({ commit }) {
+            axios
+                .get(this.state.server + "/servers", {
+                    timeout: this.timeout,
+                })
+                .then((response) => {
+                    if (response.status != 200) {
+                        const error = new Error(response.statusText);
+                        throw error;
+                    }
+                    commit('set_reachable', true);
+                    commit('update_alarms', response.data);
+                })
+                .catch((err) => {
+                    commit('set_reachable', false);
+                    commit('clear_alarms');
+                    console.log(err.code + ": " + err.message + "\n" + err.stack);
+                });
+        },
     },
 })
 

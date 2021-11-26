@@ -9,6 +9,9 @@ export default {
   components: {
     Navigation,
   },
+  mounted() {
+    this.$store.dispatch("fetch_alarms");
+  },
 };
 </script>
 

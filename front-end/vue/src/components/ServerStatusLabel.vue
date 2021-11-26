@@ -11,6 +11,7 @@
 
 <script>
 import AlarmCountLabel from "@/components/AlarmCountLabel.vue";
+import { mapState } from "vuex";
 
 export const SERVER_STATE = {
   QUERYING: { label: "Fetching...", class: "querying" },
@@ -23,44 +24,31 @@ export default {
     return {
       SERVER_STATE,
       state: SERVER_STATE.QUERYING,
-      alarm_count: Number,
+      alarm_count: 0,
     };
   },
   components: {
     AlarmCountLabel,
   },
-  mounted() {
-    this.$nextTick(this.init);
+  computed: mapState(["alarms"]),
+  watch: {
+    alarms(alarms) {
+      this.alarm_count = alarms.length;
+    },
   },
-  methods: {
-    sleep: function (ms) {
-      // Expensive function
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
-    init: async function () {
-      console.log(this.$store.getters.get_server);
-      this.state = SERVER_STATE.QUERYING;
-      this.alarm_count = 0;
-      this.axios
-        .get("http://0.0.0.0:8081/servers", {
-          timeout: this.timeout,
-        })
-        .then((response) => {
-          if (response.status != 200) {
-            const error = new Error(response.statusText);
-            throw error;
-          }
-          this.alarm_count = response.data.length;
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (mutation.type === "set_reachable") {
+        if (state.reachable) {
           this.state = SERVER_STATE.REACHABLE;
-          console.log(response);
-        })
-        .catch((err) => {
+        } else {
           this.state = SERVER_STATE.UNREACHABLE;
-          console.log(err.code);
-          console.log(err.message);
-          console.log(err.stack);
-        });
-    },
+        }
+      }
+    });
+  },
+  beforeUnmount() {
+    this.unsubscribe();
   },
 };
 </script>
