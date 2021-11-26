@@ -15,7 +15,6 @@
       </template>
       <h2 v-else>No alarms active.</h2>
     </template>
-    <h2 v-else>Server is unreachable</h2>
   </div>
 </template>
 
