@@ -40,20 +40,25 @@ export default {
     init: async function () {
       console.log(this.$store.getters.get_server);
       this.state = SERVER_STATE.QUERYING;
+      this.alarm_count = 0;
       this.axios
         .get("http://0.0.0.0:8081/servers", {
           timeout: this.timeout,
         })
         .then((response) => {
-          console.log(response);
-          this.info = response.data;
+          if (response.status != 200) {
+            const error = new Error(response.statusText);
+            throw error;
+          }
+          this.alarm_count = response.data.length;
           this.state = SERVER_STATE.REACHABLE;
+          console.log(response);
         })
         .catch((err) => {
+          this.state = SERVER_STATE.UNREACHABLE;
           console.log(err.code);
           console.log(err.message);
           console.log(err.stack);
-          this.state = SERVER_STATE.UNREACHABLE;
         });
     },
   },
