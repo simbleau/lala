@@ -1,6 +1,21 @@
 <template>
   <div class="home">
-    <AlarmButton />
+    <template v-if="this.$store.getters.reachable == true">
+      <template v-if="this.$store.getters.alarms.length > 0">
+        <div class="alarm_container">
+          <template
+            v-for="alarm in this.$store.getters.alarms"
+            :key="alarm.addr"
+          >
+            <h2>{{ alarm.addr }}</h2>
+            <br />
+            <AlarmButton />
+          </template>
+        </div>
+      </template>
+      <h2 v-else>No alarms active.</h2>
+    </template>
+    <h2 v-else>Server is unreachable</h2>
   </div>
 </template>
 
