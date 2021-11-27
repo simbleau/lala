@@ -8,7 +8,7 @@ info:
   license:
     name: "MIT License"
     url: "https://github.com/simbleau/lala/blob/main/LICENSE"
-host: "0.0.0.0"
+host: "0.0.0.0:8081"
 basePath: "/"
 tags:
 - name: "systems"
@@ -26,32 +26,20 @@ paths:
       tags:
       - "systems"
       summary: "Return a list of hosting servers"
-      parameters:
-        - in: query
-          name: limit
-          type: integer
-          required: false
-          description: The limit of servers to respond with.
       produces:
       - "application/json"
       responses:
         "200":
           description: "Successful response"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Host"
         "401":
           description: "Unauthorized"
     put:
       tags:
       - "systems"
       summary: "Register your address as a hosting server"
-      produces:
-      - "application/json"
       responses:
         "201":
-          description: "Successful response"
+          description: "Successfully registered"
           schema:
               $ref: "#/definitions/Host"
         "401":
@@ -90,10 +78,8 @@ paths:
           required: true
           description: The server to alert
       responses:
-        "204":
-          description: "Alarm was successfully triggered"
-        "304":
-          description: "Alarm was already on"
+        "200":
+          description: "Alarm is now on"
         "401":
           description: "Unauthorized"
   /silence:
@@ -109,10 +95,8 @@ paths:
           required: true
           description: The server to silence
       responses:
-        "204":
-          description: "Alarm was successfully silenced"
-        "304":
-          description: "Alarm was already off"
+        "200":
+          description: "Alarm is now off"
         "401":
           description: "Unauthorized"
   /history:
@@ -163,15 +147,13 @@ definitions:
         type: "integer"
         format: "int32"
         description: "The unique id of this history entry."
-      type:
+      kind:
         type: "string"
         enum:
-        - "server"
-        - "client"
-        - "ack"
-        - "code-1"
-        description: "One of several values representing the type of history entry this object represents."
-      host:
+        - "signal"
+        - "silence"
+        description: "A value representing the type of history entry this object represents."
+      addr:
         type: "string"
         format: "ip"
         description: "A string value representing an IP address, in either IPv4 (RFC 791) or IPv6 (RFC 8200) format."

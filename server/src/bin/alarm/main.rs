@@ -1,9 +1,9 @@
 #[macro_use]
 extern crate rocket;
 use ringbuffer::RingBufferExt;
-use rocket::{Config, State};
+use rocket::{http::Status, Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::{PreflightCORS, ALARM_PORT, CORS};
+use server_util::{models::AlarmStatus, PreflightCORS, ALARM_PORT, CORS};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod alarm_state;
 use alarm_state::AlarmState;
@@ -21,7 +21,7 @@ fn internal_error() -> &'static str {
 #[get("/status")]
 fn status(state: &State<Mutex<AlarmState>>) -> String {
     let state = state.lock().unwrap();
-    serde_json::to_string(state.status()).unwrap()
+    serde_json::to_string(&state.status()).unwrap()
 }
 
 #[options("/signal")]
@@ -33,10 +33,12 @@ fn signal_preflight() -> PreflightCORS {
 fn signal(
     state: &State<Mutex<AlarmState>>,
     client_addr: &ClientAddr,
-) -> String {
+) -> Status {
     let mut state = state.lock().unwrap();
-    state.signal(client_addr);
-    serde_json::to_string(state.status()).unwrap()
+    if matches!(state.status(), AlarmStatus::Off) {
+        state.signal(client_addr);
+    }
+    Status::Accepted
 }
 
 #[options("/silence")]
@@ -48,10 +50,12 @@ fn silence_preflight() -> PreflightCORS {
 fn silence(
     state: &State<Mutex<AlarmState>>,
     client_addr: &ClientAddr,
-) -> String {
+) -> Status {
     let mut state = state.lock().unwrap();
-    state.silence(client_addr);
-    serde_json::to_string(state.status()).unwrap()
+    if matches!(state.status(), AlarmStatus::On) {
+        state.silence(client_addr);
+    }
+    Status::Accepted
 }
 
 #[get("/history")]
