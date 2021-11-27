@@ -38,7 +38,7 @@ fn signal(
     if matches!(state.status(), AlarmStatus::Off) {
         state.signal(client_addr);
     }
-    Status::Accepted
+    Status::Ok
 }
 
 #[options("/silence")]
@@ -55,7 +55,7 @@ fn silence(
     if matches!(state.status(), AlarmStatus::On) {
         state.silence(client_addr);
     }
-    Status::Accepted
+    Status::Ok
 }
 
 #[get("/history")]

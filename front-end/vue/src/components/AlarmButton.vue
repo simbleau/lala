@@ -11,16 +11,15 @@
         <p>{{ this.alarm_addr }}</p>
       </div>
     </button>
-    <h2>{{ this.info }}</h2>
   </div>
 </template>
 
 <script>
 const BUTTON_STATE = {
-  ON: { label: "Silence", class: "failed", disabled: false },
-  OFF: { label: "Signal", class: "ready", disabled: false },
+  ON: { label: "Silence", class: "on", disabled: false },
+  OFF: { label: "Signal", class: "off", disabled: false },
   LOADING: { label: "Loading...", class: "loading", disabled: true },
-  FAILED: { label: "Failed. Try again?", class: "failed", disabled: true },
+  FAILED: { label: "Failed. Try again?", class: "error", disabled: true },
 };
 export default {
   name: "AlarmButton",
@@ -28,13 +27,40 @@ export default {
     return {
       on: false,
       state: BUTTON_STATE.OFF,
-      info: "",
       timeout: 5000, // in ms
       state_change: 3000, // in ms
     };
   },
   props: {
     alarm_addr: String,
+  },
+  mounted() {
+    var uri = this.$store.getters.server + "/status?server=" + this.alarm_addr;
+    // Set to loading state
+    this.state = BUTTON_STATE.LOADING;
+    // Perform request
+    this.axios
+      .get(uri, {
+        crossDomain: true,
+        timeout: this.timeout,
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.status != 200) {
+          const error = new Error(response.statusText);
+          throw error;
+        }
+        if (response.data == "on") {
+          this.state = BUTTON_STATE.ON;
+          this.on = true;
+        } else if (response.data == "off") {
+          this.state = BUTTON_STATE.OFF;
+          this.on = false;
+        }
+      })
+      .catch((err) => {
+        console.log(err.code + ": " + err.message + "\n" + err.stack);
+      });
   },
   methods: {
     wait: function (ms) {
@@ -57,20 +83,16 @@ export default {
           timeout: this.timeout,
         })
         .then((response) => {
-          this.info = response.data;
           if (response.status != 200) {
             const error = new Error(response.statusText);
             throw error;
           }
-          if (response.data == "on") {
-            this.state = BUTTON_STATE.ON;
-            this.on = true;
-          } else if (response.data == "off") {
+          if (this.on) {
             this.state = BUTTON_STATE.OFF;
             this.on = false;
           } else {
-            const error = new Error(response.statusText);
-            throw error;
+            this.state = BUTTON_STATE.ON;
+            this.on = true;
           }
           success = true;
         })
@@ -117,7 +139,7 @@ p {
   touch-action: manipulation;
 }
 
-.ready {
+.off {
   background-color: #fbecc2;
   box-shadow: rgba(235, 179, 27, 0.2) 0 -25px 18px -14px inset,
     rgba(235, 179, 27, 0.15) 0 1px 2px, rgba(235, 179, 27, 0.15) 0 2px 4px,
@@ -125,12 +147,29 @@ p {
     rgba(235, 179, 27, 0.15) 0 16px 32px;
   color: goldenrod;
 }
-.ready:hover {
+.off:hover {
   transform: scale(1.25) rotate(-1deg);
   box-shadow: rgba(235, 179, 27, 0.35) 0 -25px 18px -14px inset,
     rgba(235, 179, 27, 0.25) 0 1px 2px, rgba(235, 179, 27, 0.25) 0 2px 4px,
     rgba(235, 179, 27, 0.25) 0 4px 8px, rgba(235, 179, 27, 0.25) 0 8px 16px,
     rgba(235, 179, 27, 0.25) 0 16px 32px;
+}
+.on {
+  background-color: #c2fbd7;
+  box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
+    rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
+    rgba(44, 187, 99, 0.15) 0 16px 32px;
+  color: green;
+}
+.on:hover {
+  transform: scale(1.25) rotate(-1deg);
+  background-color: #c2fbd7;
+  box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
+    rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
+    rgba(44, 187, 99, 0.25) 0 16px 32px;
+  color: green;
 }
 .loading {
   background-color: #c2c2c2;
@@ -140,15 +179,7 @@ p {
     rgba(44, 44, 44, 0.15) 0 16px 32px;
   color: grey;
 }
-.success {
-  background-color: #c2fbd7;
-  box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
-    rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
-    rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
-    rgba(44, 187, 99, 0.15) 0 16px 32px;
-  color: green;
-}
-.failed {
+.error {
   background-color: #fbc2c2;
   box-shadow: rgba(187, 44, 44, 0.2) 0 -25px 18px -14px inset,
     rgba(187, 44, 44, 0.15) 0 1px 2px, rgba(187, 44, 44, 0.15) 0 2px 4px,
