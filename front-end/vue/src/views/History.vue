@@ -1,11 +1,10 @@
 <template>
   <div v-if="this.options.length > 0" class="history_container">
-    <div id="alarm_chooser">
-      <span>Alarm:</span>
+    <div class="select">
       <select @change="(opt) => selector_changed(opt)">
-        <option disabled selected value>Select</option>
+        <option disabled selected value>Alarm</option>
         <option v-for="option in this.options" v-bind:key="option.addr">
-          {{ option.addr }}
+          <span>{{ option.addr }}</span>
         </option>
       </select>
     </div>
@@ -102,10 +101,6 @@ export default {
 </script>
 
 <style scoped>
-.v-select {
-  background-color: white;
-  border-radius: 3px;
-}
 .history_container {
   display: block;
 }
@@ -128,5 +123,45 @@ th,
 td {
   padding: 15px;
   text-align: left;
+}
+select {
+  font-size: 15px;
+  appearance: none;
+  outline: 0;
+  border: 0;
+  box-shadow: none;
+  flex: 1;
+  padding: 0 1em;
+  color: #42b983;
+  background-color: var(--darkgray);
+  background-image: none;
+  cursor: pointer;
+}
+select::-ms-expand {
+  display: none;
+}
+.select {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: 0.3em;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+}
+.select::after {
+  content: "\25BC";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #34495e;
+  transition: 0.5s all ease;
+  pointer-events: none;
+}
+.select:hover::after {
+  color: #f39c12;
 }
 </style>
