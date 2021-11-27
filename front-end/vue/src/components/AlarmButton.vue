@@ -75,10 +75,9 @@ export default {
           success = false;
         });
       // Handle result
-      console.log("S: " + success);
       if (success == false) {
         await this.wait(this.state_change);
-        this.state = BUTTON_STATE.READY;
+        this.state = BUTTON_STATE.OFF;
       }
     },
   },
