@@ -4,7 +4,7 @@
       <select @change="(opt) => selector_changed(opt)">
         <option disabled selected value>Alarm</option>
         <option v-for="option in this.options" v-bind:key="option.addr">
-          <span>{{ option.addr }}</span>
+          {{ option.addr }}
         </option>
       </select>
     </div>
