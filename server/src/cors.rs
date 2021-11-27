@@ -21,15 +21,8 @@ impl Fairing for CORS {
         response: &mut Response<'r>,
     ) {
         response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
-        response.set_header(Header::new(
-            "Access-Control-Allow-Methods",
-            "POST, GET, OPTIONS",
-        ));
+        response.set_header(Header::new("Access-Control-Allow-Methods", "*"));
         response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
-        response.set_header(Header::new(
-            "Access-Control-Allow-Credentials",
-            "true",
-        ));
     }
 }
 
@@ -41,10 +34,6 @@ impl<'r> Responder<'r, 'static> for PreflightCORS {
             .raw_header("Access-Control-Allow-Origin", "*")
             .raw_header("Access-Control-Allow-Credentials", "true")
             .raw_header("Access-Control-Allow-Methods", "*")
-            .raw_header(
-                "Access-Control-Allow-Credentials",
-                "POST, PUT, GET, OPTIONS",
-            )
             .ok()
     }
 }
