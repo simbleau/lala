@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Alarms from '../views/Alarms.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Alarms',
-    component: Alarms
+    component: () => import('@/views/Alarms.vue')
   },
   {
     path: '/about',
