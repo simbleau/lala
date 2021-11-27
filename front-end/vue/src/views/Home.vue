@@ -26,9 +26,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.home {
-  margin: 50px;
-}
-</style>
