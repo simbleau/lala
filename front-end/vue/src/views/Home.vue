@@ -7,9 +7,7 @@
             v-for="alarm in this.$store.getters.alarms"
             :key="alarm.addr"
           >
-            <h2>{{ alarm.addr }}</h2>
-            <br />
-            <AlarmButton />
+            <AlarmButton v-bind:alarm_addr="alarm.addr" />
           </template>
         </div>
       </template>

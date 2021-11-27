@@ -6,51 +6,76 @@
     class="button-33"
   >
     {{ state.label }}
+    <div id="addr_attachment">
+      <p>{{ this.alarm_addr }}</p>
+    </div>
   </button>
   <h2>{{ this.info }}</h2>
 </template>
 
 <script>
-const QUERY_ADDRESS = "https://imbleau.com/lala/get.php?who=Lala";
 const BUTTON_STATE = {
   READY: { label: "Alarm!", class: "ready", disabled: false },
+  ON: { label: "Silence", class: "failed", disabled: false },
+  OFF: { label: "Signal", class: "ready", disabled: false },
   LOADING: { label: "Loading...", class: "loading", disabled: true },
   FAILED: { label: "Failed. Try again?", class: "failed", disabled: true },
-  SUCCESS: { label: "Succeeded!", class: "success", disabled: true },
 };
 export default {
   name: "AlarmButton",
   data() {
     return {
+      on: false,
       state: BUTTON_STATE.READY,
       info: "",
       timeout: 5000, // in ms
       state_change: 3000, // in ms
     };
   },
+  props: {
+    alarm_addr: String,
+  },
   methods: {
     wait: function (ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     call: async function () {
+      var uri;
+      if (this.on) {
+        uri = this.$store.getters.server + "/silence?server=" + this.alarm_addr;
+      } else {
+        uri = this.$store.getters.server + "/signal?server=" + this.alarm_addr;
+      }
       // Set to loading state
+      var success = false;
       this.state = BUTTON_STATE.LOADING;
+      // Perform request
       this.axios
-        .get(QUERY_ADDRESS, {
+        .post(uri, {
           timeout: this.timeout,
         })
         .then((response) => {
           this.info = response.data;
-          this.state = BUTTON_STATE.SUCCESS;
+          if (response.data == "on") {
+            this.state = BUTTON_STATE.ON;
+          } else if (response.data == "off") {
+            this.state = BUTTON_STATE.OFF;
+          } else {
+            const error = new Error(response.statusText);
+            throw error;
+          }
+          success = true;
         })
         .catch((err) => {
-          console.log(err.code);
-          console.log(err.message);
-          console.log(err.stack);
+          console.log(err.code + ": " + err.message + "\n" + err.stack);
           this.state = BUTTON_STATE.FAILED;
-        })
-        .then(await this.wait(this.state_change))
-        .then(() => (this.state = BUTTON_STATE.READY));
+          success = false;
+        });
+      // Handle result
+      if (!success) {
+        await this.wait(this.state_change);
+        this.state = BUTTON_STATE.READY;
+      }
     },
   },
 };
@@ -58,6 +83,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#addr_attachment {
+  position: relative;
+}
+p {
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  font-size: 0.5em;
+}
 .button-33 {
   width: 250px;
   height: 75px;
