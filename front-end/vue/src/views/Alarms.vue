@@ -1,14 +1,11 @@
 <template>
-  <div class="home">
+  <div id="alarms">
     <template v-if="this.$store.getters.reachable == true">
       <template v-if="this.$store.getters.alarms.length > 0">
         <div class="alarm_container">
-          <template
-            v-for="alarm in this.$store.getters.alarms"
-            :key="alarm.addr"
-          >
+          <div v-for="alarm in this.$store.getters.alarms" :key="alarm.addr">
             <AlarmButton v-bind:alarm_addr="alarm.addr" />
-          </template>
+          </div>
         </div>
       </template>
       <h2 v-else>No alarms active.</h2>
@@ -20,7 +17,7 @@
 import AlarmButton from "@/components/AlarmButton.vue";
 
 export default {
-  name: "Home",
+  name: "Alarms",
   components: {
     AlarmButton,
   },

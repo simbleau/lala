@@ -1,14 +1,16 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/history">History</router-link> |
-    <router-link to="/api">API</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="nav_container">
+    <div id="nav">
+      <router-link to="/">Alarms</router-link> |
+      <router-link to="/history">History</router-link> |
+      <router-link to="/api">API</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <div id="status_container">
+      <ServerStatusLabel id="server_label" />
+    </div>
+    <div id="spacer" />
   </div>
-  <div id="status_container">
-    <ServerStatusLabel id="server_label" />
-  </div>
-  <div id="spacer" />
 </template>
 
 <script>
