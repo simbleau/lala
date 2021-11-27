@@ -1,27 +1,32 @@
 <template>
-  <div class="history_container">
+  <div v-if="this.options.length > 0" class="history_container">
     <div id="alarm_chooser">
       <span>Alarm:</span>
-      <v-select :options="options" label="title"></v-select>
+      <select @change="(opt) => selector_changed(opt)">
+        <option disabled selected value>Select</option>
+        <option v-for="option in this.options" v-bind:key="option.addr">
+          {{ option.addr }}
+        </option>
+      </select>
     </div>
     <br />
     <table id="history_table">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Type</th>
-          <th>IP</th>
-          <th>Date-time</th>
+          <th>Date</th>
+          <th>Addr</th>
+          <th>Kind</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in this.$store.getters.get_history" :key="entry.id">
+        <tr v-for="entry in this.history" :key="entry.id">
           <th scope="row">{{ entry.id }}</th>
           <td>
-            {{ entry.type }}
+            {{ entry.date }}
           </td>
-          <td>{{ entry.ip }}</td>
-          <td>{{ entry.get_date_string() }}</td>
+          <td>{{ entry.addr }}</td>
+          <td>{{ entry.kind }}</td>
         </tr>
       </tbody>
     </table>
@@ -29,20 +34,69 @@
 </template>
 
 <script>
-import HistoryEntry from "@/util/history";
+import { mapState } from "vuex";
 
 export default {
   name: "History",
   components: {},
   data() {
     return {
-      options: ["foo", "bar"],
+      options: [],
+      history: [],
     };
   },
+  computed: mapState(["alarms"]),
+  watch: {
+    alarms(alarms) {
+      this.load_alarms(alarms);
+    },
+  },
   mounted() {
-    // TODO load data in
-    let mock_entry = new HistoryEntry(0, "server", "localhost", new Date());
-    this.$store.commit("add_history", mock_entry);
+    this.load_alarms(this.$store.getters.alarms);
+  },
+  methods: {
+    selector_changed(selected) {
+      this.fetch_history(selected.target.value);
+    },
+    clear_alarms() {
+      this.options = [];
+    },
+    load_alarms(alarms) {
+      this.clear_alarms();
+      for (const alarm of alarms) {
+        this.options.push(alarm);
+      }
+    },
+    clear_history() {
+      this.history = [];
+    },
+    load_history(payload) {
+      console.log(payload);
+      this.clear_history();
+      for (const hist_entry of payload) {
+        this.history.push(hist_entry);
+      }
+    },
+    fetch_history: async function (addr) {
+      var uri = this.$store.getters.server + "/history?server=" + addr;
+      console.log(uri);
+      // Perform request
+      await this.axios
+        .get(uri, {
+          crossDomain: true,
+          timeout: this.timeout,
+        })
+        .then((response) => {
+          if (response.status != 200) {
+            const error = new Error(response.statusText);
+            throw error;
+          }
+          this.load_history(response.data);
+        })
+        .catch((err) => {
+          console.log(err.code + ": " + err.message + "\n" + err.stack);
+        });
+    },
   },
 };
 </script>

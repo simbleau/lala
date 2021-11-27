@@ -58,6 +58,10 @@ export default {
         })
         .then((response) => {
           this.info = response.data;
+          if (response.status != 200) {
+            const error = new Error(response.statusText);
+            throw error;
+          }
           if (response.data == "on") {
             this.state = BUTTON_STATE.ON;
             this.on = true;
