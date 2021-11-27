@@ -1,6 +1,7 @@
 use rocket::fairing::Fairing;
 use rocket::fairing::{Info, Kind};
 use rocket::http::Header;
+use rocket::response::{self, Responder};
 use rocket::{Request, Response};
 
 pub struct CORS;
@@ -29,5 +30,21 @@ impl Fairing for CORS {
             "Access-Control-Allow-Credentials",
             "true",
         ));
+    }
+}
+
+pub type PreflightCORS = CORS;
+
+impl<'r> Responder<'r, 'static> for PreflightCORS {
+    fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
+        Response::build()
+            .raw_header("Access-Control-Allow-Origin", "*")
+            .raw_header("Access-Control-Allow-Credentials", "true")
+            .raw_header("Access-Control-Allow-Methods", "*")
+            .raw_header(
+                "Access-Control-Allow-Credentials",
+                "POST, PUT, GET, OPTIONS",
+            )
+            .ok()
     }
 }

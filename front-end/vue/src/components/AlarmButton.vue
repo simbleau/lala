@@ -52,7 +52,8 @@ export default {
       this.state = BUTTON_STATE.LOADING;
       // Perform request
       await this.axios
-        .get(uri, {
+        .post(uri, {
+          crossDomain: true,
           timeout: this.timeout,
         })
         .then((response) => {

@@ -3,7 +3,7 @@ extern crate rocket;
 use ringbuffer::RingBufferExt;
 use rocket::{Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::{ALARM_PORT, CORS};
+use server_util::{PreflightCORS, ALARM_PORT, CORS};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod alarm_state;
 use alarm_state::AlarmState;
@@ -24,6 +24,11 @@ fn status(state: &State<Mutex<AlarmState>>) -> String {
     serde_json::to_string(state.status()).unwrap()
 }
 
+#[options("/signal")]
+fn signal_preflight() -> PreflightCORS {
+    CORS
+}
+
 #[post("/signal")]
 fn signal(
     state: &State<Mutex<AlarmState>>,
@@ -32,6 +37,11 @@ fn signal(
     let mut state = state.lock().unwrap();
     state.signal(client_addr);
     serde_json::to_string(state.status()).unwrap()
+}
+
+#[options("/silence")]
+fn silence_preflight() -> PreflightCORS {
+    CORS
 }
 
 #[post("/silence")]
@@ -66,5 +76,6 @@ fn rocket() -> _ {
         .attach(CORS)
         .manage(Mutex::new(AlarmState::default()))
         .mount("/", routes![status, signal, silence, history])
+        .mount("/", routes![signal_preflight, silence_preflight])
         .register("/", catchers![not_found, internal_error])
 }

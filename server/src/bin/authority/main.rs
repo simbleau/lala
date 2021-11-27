@@ -2,7 +2,7 @@
 extern crate rocket;
 use rocket::{http::Status, response::Redirect, Config, State};
 use rocket_client_addr::ClientAddr;
-use server_util::{ALARM_PORT, AUTHORITY_PORT, CORS};
+use server_util::{PreflightCORS, ALARM_PORT, AUTHORITY_PORT, CORS};
 use std::{net::Ipv4Addr, sync::Mutex};
 mod server_state;
 use server_state::ServerState;
@@ -40,9 +40,19 @@ fn status_redirect(server: &str) -> Redirect {
     Redirect::permanent(format!("http://{}:{}/status", server, ALARM_PORT))
 }
 
+#[options("/signal")]
+fn signal_preflight() -> PreflightCORS {
+    CORS
+}
+
 #[post("/signal?<server>")]
 fn signal_redirect(server: &str) -> Redirect {
     Redirect::permanent(format!("http://{}:{}/signal", server, ALARM_PORT))
+}
+
+#[options("/silence")]
+fn silence_preflight() -> PreflightCORS {
+    CORS
 }
 
 #[post("/silence?<server>")]
@@ -76,5 +86,6 @@ fn rocket() -> _ {
                 history_redirect
             ],
         )
+        .mount("/", routes![signal_preflight, silence_preflight])
         .register("/", catchers![not_found, internal_error])
 }

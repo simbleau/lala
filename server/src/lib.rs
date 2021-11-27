@@ -2,7 +2,7 @@ pub mod data_structures;
 pub mod models;
 
 mod cors;
-pub use cors::CORS;
+pub use cors::{PreflightCORS, CORS};
 
 pub const AUTHORITY_PORT: u16 = 8081;
 pub const ALARM_PORT: u16 = 8082;
