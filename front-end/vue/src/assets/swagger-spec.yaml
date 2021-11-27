@@ -2,14 +2,14 @@ swagger: "2.0"
 info:
   description: "This is the API spec for interfacing externally with this alarm system. Check-ins for servers and responders must occur within every 15 minutes."
   version: "1.0.0"
-  title: "Lala"
+  title: "Alarmy"
   contact:
     email: "spencer@imbleau.com"
   license:
     name: "MIT License"
     url: "https://github.com/simbleau/lala/blob/main/LICENSE"
-host: "imbleau.com"
-basePath: "/lala"
+host: "0.0.0.0"
+basePath: "/"
 tags:
 - name: "systems"
   description: "Everything about alarm servers"
