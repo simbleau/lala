@@ -1,21 +1,22 @@
 <template>
-  <button
-    v-bind:class="state.class"
-    v-bind:disabled="state.disabled"
-    v-on:click="call"
-    class="button-33"
-  >
-    {{ state.label }}
-    <div id="addr_attachment">
-      <p>{{ this.alarm_addr }}</p>
-    </div>
-  </button>
-  <h2>{{ this.info }}</h2>
+  <div id="alarm_button_container">
+    <button
+      v-bind:class="state.class"
+      v-bind:disabled="state.disabled"
+      v-on:click="call"
+      class="button-33"
+    >
+      {{ state.label }}
+      <div id="addr_attachment">
+        <p>{{ this.alarm_addr }}</p>
+      </div>
+    </button>
+    <h2>{{ this.info }}</h2>
+  </div>
 </template>
 
 <script>
 const BUTTON_STATE = {
-  READY: { label: "Alarm!", class: "ready", disabled: false },
   ON: { label: "Silence", class: "failed", disabled: false },
   OFF: { label: "Signal", class: "ready", disabled: false },
   LOADING: { label: "Loading...", class: "loading", disabled: true },
@@ -26,7 +27,7 @@ export default {
   data() {
     return {
       on: false,
-      state: BUTTON_STATE.READY,
+      state: BUTTON_STATE.OFF,
       info: "",
       timeout: 5000, // in ms
       state_change: 3000, // in ms
@@ -50,16 +51,18 @@ export default {
       var success = false;
       this.state = BUTTON_STATE.LOADING;
       // Perform request
-      this.axios
-        .post(uri, {
+      await this.axios
+        .get(uri, {
           timeout: this.timeout,
         })
         .then((response) => {
           this.info = response.data;
           if (response.data == "on") {
             this.state = BUTTON_STATE.ON;
+            this.on = true;
           } else if (response.data == "off") {
             this.state = BUTTON_STATE.OFF;
+            this.on = false;
           } else {
             const error = new Error(response.statusText);
             throw error;
@@ -72,7 +75,8 @@ export default {
           success = false;
         });
       // Handle result
-      if (!success) {
+      console.log("S: " + success);
+      if (success == false) {
         await this.wait(this.state_change);
         this.state = BUTTON_STATE.READY;
       }
